@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>YTClip</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>YTClip</h1>
+        <p>
+          Download full videos, audio, or precise clips from supported streaming
+          sites.
+        </p>
+      </div>
+      <div id="tools" class="tools">Checking tools…</div>
+    </header>
+
+    <main>
+      <section class="card">
+        <label>Video URL</label>
+        <input
+          id="url"
+          type="url"
+          placeholder="YouTube, Archive.org, Vimeo, and more"
+          spellcheck="false"
+        />
+
+        <div class="row">
+          <div class="field grow">
+            <label>Download type</label>
+            <select id="type">
+              <option value="clips">Clips</option>
+              <option value="full">Full video</option>
+              <option value="audio">Audio only</option>
+            </select>
+          </div>
+          <div class="field grow" id="qualityField">
+            <label>Video quality</label>
+            <select id="quality">
+              <option value="480">480p</option>
+              <option value="720">720p</option>
+              <option value="1080">1080p</option>
+              <option value="1440">1440p</option>
+              <option value="2160">4K</option>
+              <option value="best">Best available</option>
+            </select>
+          </div>
+          <div class="field grow hidden" id="audioField">
+            <label>Audio format</label>
+            <select id="audioFormat">
+              <option value="mp3">MP3</option>
+              <option value="m4a">M4A</option>
+              <option value="wav">WAV</option>
+              <option value="flac">FLAC</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" id="clipsCard">
+        <div class="sectionTitle">
+          <div>
+            <h2>Clips</h2>
+            <span
+              >Add as many Start → End pairs as you want for the same
+              video.</span
+            >
+          </div>
+          <div class="buttonGroup">
+            <button id="clearTimestamps" class="secondary">
+              Clear timestamps
+            </button>
+            <button id="addClip" class="secondary">+ Add clip</button>
+          </div>
+        </div>
+        <label class="checkRow">
+          <input id="useVideoTitle" type="checkbox" checked />
+          <span>Use the video title for clip names</span>
+        </label>
+        <div id="clipRows"></div>
+      </section>
+
+      <section class="card">
+        <div class="row">
+          <div class="field grow">
+            <label>Output folder</label>
+            <div class="folderRow">
+              <input id="outputDir" readonly />
+              <button id="chooseFolder" class="secondary">Choose…</button>
+            </div>
+            <label class="checkRow folderPreference">
+              <input id="rememberFolder" type="checkbox" />
+              <span>Remember this output folder</span>
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field grow">
+            <label
+              >File name prefix <span class="muted">(optional)</span></label
+            >
+            <input id="prefix" placeholder="e.g. Mehdi_Gaza" />
+          </div>
+          <div class="field">
+            <label>After queue finishes</label>
+            <button id="openFolder" class="secondary">
+              Open output folder
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="actions">
+        <button id="download" class="primary">Download</button>
+        <button id="clear" class="secondary">Clear</button>
+      </section>
+
+      <section class="card">
+        <div class="sectionTitle">
+          <div>
+            <h2>Queue</h2>
+            <span id="queueSummary">0 jobs</span>
+          </div>
+          <button id="clearQueue" class="secondary small">Clear queue</button>
+        </div>
+        <div id="queue"></div>
+      </section>
+
+      <section class="card logCard">
+        <div class="sectionTitle">
+          <h2>Log</h2>
+          <button id="clearLog" class="secondary small">Clear</button>
+        </div>
+        <pre id="log"></pre>
+      </section>
+    </main>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>

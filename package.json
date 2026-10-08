@@ -1,0 +1,21 @@
+{
+  "name": "ytclip-ui",
+  "version": "1.2.0",
+  "description": "A lightweight macOS GUI for yt-dlp downloads and precise clips from supported sites.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^44.3.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.pramanik.ytclip",
+    "productName": "YTClip",
+    "mac": {
+      "target": "dmg"
+    }
+  }
+}
