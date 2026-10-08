@@ -68,10 +68,25 @@ function isHttpUrl(value) {
 
 async function detect() {
   const t = await window.ytclip.detectTools();
-  const a = t.ytdlp ? "yt-dlp ✓" : "yt-dlp ✕";
-  const b = t.ffmpeg ? "ffmpeg ✓" : "ffmpeg ✕";
+  const ytdlpOk = Boolean(t.ytdlp);
+  const ffmpegOk = Boolean(t.ffmpeg);
+  const a = ytdlpOk ? "yt-dlp ✓" : "yt-dlp ✕";
+  const b = ffmpegOk ? "ffmpeg ✓" : "ffmpeg ✕";
+  const ready = ytdlpOk && ffmpegOk;
+
   tools.textContent = `${a}  ·  ${b}`;
   tools.title = `yt-dlp: ${t.ytdlp || "not found"}\nffmpeg: ${t.ffmpeg || "not found"}`;
+  tools.style.opacity = ready ? "1" : "0.9";
+  tools.style.borderColor = ready ? "#3d9d60" : "#d36b42";
+  tools.style.background = ready ? "#f2fbf5" : "#fff5ec";
+  document.getElementById("download").disabled = !ready;
+
+  if (!ready) {
+    appendLog(
+      "WARNING: yt-dlp and/or ffmpeg were not found in the system PATH. Install them with: brew install yt-dlp ffmpeg\n",
+    );
+    tools.textContent = `${a}  ·  ${b}  ·  setup required`;
+  }
 }
 type.onchange = () => {
   const audio = type.value === "audio";

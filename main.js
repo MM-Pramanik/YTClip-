@@ -4,27 +4,52 @@ const fs = require("fs");
 const os = require("os");
 const { spawn, execFile } = require("child_process");
 
+app.setName("YTClip");
+
 let mainWindow;
 const jobs = new Map();
 let jobCounter = 0;
 
-function findExecutable(name) {
-  const candidates = [
+function getExecutableCandidates(name) {
+  const pathEntries = (process.env.PATH || "")
+    .split(path.delimiter)
+    .filter(Boolean)
+    .map((entry) => path.join(entry, name));
+
+  return [
+    ...pathEntries,
     `/opt/homebrew/bin/${name}`,
+    `/opt/homebrew/opt/${name}/bin/${name}`,
     `/usr/local/bin/${name}`,
+    `/usr/local/opt/${name}/bin/${name}`,
     `/usr/bin/${name}`,
+    `/bin/${name}`,
     path.join(os.homedir(), "bin", name),
   ];
-  return candidates.find((p) => fs.existsSync(p)) || null;
+}
+
+function findExecutable(name) {
+  const seen = new Set();
+  for (const candidate of getExecutableCandidates(name)) {
+    const normalized = path.normalize(candidate);
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    if (fs.existsSync(normalized) && fs.statSync(normalized).isFile()) {
+      return normalized;
+    }
+  }
+  return null;
 }
 
 function createWindow() {
+  const iconPath = path.join(__dirname, "build", process.platform === "darwin" ? "icon.icns" : "icon.png");
   mainWindow = new BrowserWindow({
     width: 1050,
     height: 760,
     minWidth: 850,
     minHeight: 650,
-    title: "YTClip",
+    title: "YTClip | Video Downloader",
+    icon: fs.existsSync(iconPath) ? iconPath : undefined,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -32,6 +57,28 @@ function createWindow() {
     },
   });
   mainWindow.loadFile(path.join(__dirname, "index.html"));
+}
+
+function getMissingDependencies() {
+  const result = [];
+  if (!findExecutable("yt-dlp")) result.push("yt-dlp");
+  if (!findExecutable("ffmpeg")) result.push("ffmpeg");
+  return result;
+}
+
+function warnMissingDependencies() {
+  const missing = getMissingDependencies();
+  if (!missing.length || !mainWindow || mainWindow.isDestroyed()) return;
+
+  dialog
+    .showMessageBox(mainWindow, {
+      type: "warning",
+      title: "YTClip setup required",
+      message: "Required tools are missing.",
+      detail: `YTClip needs ${missing.join(" and ")} installed to download media.\n\nInstall with: brew install ${missing.join(" ")}`,
+      buttons: ["OK"],
+    })
+    .catch(() => undefined);
 }
 
 app.whenReady().then(() => {
@@ -53,6 +100,7 @@ app.whenReady().then(() => {
   ipcMain.handle("folder:open", (_, folder) => shell.openPath(folder));
 
   createWindow();
+  warnMissingDependencies();
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });

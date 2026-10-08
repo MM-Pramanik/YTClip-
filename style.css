@@ -14,10 +14,30 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 18px;
+}
+.brandWrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.brandMark {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #0f172a, #1d4ed8 60%, #2563eb);
+  color: #f8fafc;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
 }
 h1 {
   margin: 0;
   font-size: 28px;
+  letter-spacing: -0.04em;
 }
 h2 {
   margin: 0;
@@ -37,6 +57,7 @@ header p {
   border-radius: 9px;
   background: #fff;
   border: 1px solid #ddd;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.025);
 }
 main {
   max-width: 980px;

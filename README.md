@@ -80,7 +80,7 @@ YTClip is an [Electron](https://www.electronjs.org/) application. Its interface 
 
 ## Build a macOS installer
 
-Create a macOS disk image with:
+Create a local DMG build with:
 
 ```bash
 npm run dist
