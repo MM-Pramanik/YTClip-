@@ -88,6 +88,22 @@ npm run dist
 
 The generated installer is placed in `dist/`. Build artifacts and installed dependencies are excluded from Git by `.gitignore`; publish installers as GitHub Release assets rather than committing them to the source repository.
 
+### macOS first-open warning
+
+The DMG built by this project is not signed or notarized with an Apple Developer ID. When downloaded from a browser, macOS may show a warning such as **“YTClip is damaged and can’t be opened”** and block the app. This is a Gatekeeper security restriction; it does not mean that `yt-dlp` or FFmpeg are missing. GitHub Releases do not remove this warning.
+
+Only if you trust the app and built or obtained it from a source you trust, move `YTClip.app` into `/Applications`, then remove its download quarantine attribute in Terminal:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/YTClip.app"
+```
+
+This bypasses a macOS security check for that app. Do not run it on software whose source you do not trust. If the app still will not open, remove that copy and rebuild or download it again.
+
+To distribute the app without this workaround, the release must be signed with a valid Apple Developer ID and notarized by Apple. The current build setup does not do this.
+
+The DMG is architecture-specific. For example, an `arm64` build is intended for Apple Silicon Macs; Intel Macs require an x64 build. The app also requires `yt-dlp` and FFmpeg to be installed separately (`brew install yt-dlp ffmpeg`).
+
 ## License
 
 No license has been specified yet. Unless a license is added, the default copyright rules apply and others may not have permission to use, modify, or redistribute this project.
