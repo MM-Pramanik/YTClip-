@@ -40,6 +40,36 @@ npm start
 
 Replace `<repository-url>` with the URL of your GitHub repository.
 
+## How the app works
+
+YTClip is an [Electron](https://www.electronjs.org/) application. Its interface runs in a browser window, while the Electron main process handles operating-system features and starts download tools.
+
+### Project structure
+
+| File | Purpose |
+| --- | --- |
+| [`index.html`](./index.html) | Defines the interface and the IDs used by the renderer. |
+| [`style.css`](./style.css) | Styles the interface. |
+| [`renderer.js`](./renderer.js) | Handles user interactions, builds download jobs, updates the queue and log, and remembers the output folder in browser storage. |
+| [`preload.js`](./preload.js) | Exposes a small, controlled `window.ytclip` API to the interface using Electron's context bridge. |
+| [`main.js`](./main.js) | Creates the application window, handles requests from the interface, locates `yt-dlp`, and starts, monitors, or cancels download processes. |
+| [`package.json`](./package.json) | Defines the app entry point, npm commands, dependencies, and macOS packaging settings. |
+
+### Download flow
+
+1. The renderer collects the URL, format, quality, clip timestamps, and output folder.
+2. It sends a job request through the API exposed by `preload.js`; the renderer does not directly access Node.js or operating-system APIs.
+3. The main process validates the URL and required tools, then starts `yt-dlp` with the requested options. For audio conversion and video merging, `yt-dlp` uses the installed FFmpeg tools.
+4. The main process sends progress, log, and completion events back through the preload API. The renderer uses these events to update the queue and log.
+
+### Where to customize
+
+- To change labels, controls, or page structure, edit `index.html`; keep element IDs in sync with `renderer.js`.
+- To change layout, colors, or typography, edit `style.css`.
+- To change form behavior, queue display, or remembered-folder behavior, edit `renderer.js`.
+- To change download arguments, tool detection, or operating-system integration, edit `main.js`.
+- If you add or change a renderer-to-main operation, expose it in `preload.js` and handle it in `main.js`. Keep this bridge narrow rather than enabling Node.js integration in the page.
+
 ## Using YTClip
 
 1. Paste a supported HTTP or HTTPS video URL.
